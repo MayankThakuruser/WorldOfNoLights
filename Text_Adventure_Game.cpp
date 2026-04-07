@@ -10,7 +10,7 @@ public:
     string type;
 
 
-    Room(const string& room_name, const string& room_description, const string& room_type)
+    Room(const string& room_name, const string& room_description, const string& room_type) // constructor
         :name(room_name), description(room_description ), type (room_type){ }
 };
 class Player {
@@ -127,40 +127,52 @@ void Courtyard_Event(Player& p, Room& r){
     }
     
 }
+Player setupPlayer() {
+    string name;
+    int choice;
+
+    cout << "Welcome to the World of No Lights" << endl;
+    cout << "Do you want to be 'Mage (1)' or 'Warrior (2)': ";
+
+    cin >> choice;
+
+    cout << "Enter yout character's name";
+    cin >> name;
+
+    if (choice == 1) {
+        
+        //assigns attributes to character based on player choice (int health, int mana, int durability, int strength)
+        return Player(name, "Mage", 20, 15, 8, 2);
+    }
+    else {
+        
+        return Player(name, "Warrior", 25, 0, 12, 15);
+    }
+}
+
+void displayHUD(const Player& p) {
+
+    cout << "\n========================================" << endl;
+    cout << " NAME: " << p.name << " | CLASS: " << p.characterClass << endl;
+    cout << " HP: " << p.health << " | MANA: " << p.mana << " | STR: " << p.strength << endl;
+    cout << " INVENTORY: [" << p.inventory << "]" << endl;
+    cout << "========================================" << endl;
+}
 
 
 int main() {
     char playAgain; 
     int location{ 1 };
 
-    cout << "Welcome to the World of No Lights" << endl;
-    cout << "Do you want to be 'Mage (1)' or 'Warrior (2)': ";
-
-    int choice;
-    cin >> choice;
-
-    string playerName;
-    cout << "Enter yout character's name";
-    cin >> playerName;
-
     Player myPlayer("Unknown", "None", 0, 0, 0, 0);
-
-    //assigns attributes to character based on player choice (int health, int mana, int durability, int strength)
-    if (choice == 1) {
-        myPlayer = Player(playerName, "Mage", 20, 15, 8, 2); 
-    }
-    else if (choice == 2) {
-        myPlayer = Player(playerName, "Warrior", 25, 0, 12, 15 );
-    }
-    else {
-        cout << "Invalid choice. The darkness consumes you." << endl;
-        return 0;
-    }
-
+    Player myPlayer = setupPlayer();
+   
 
     myPlayer.Intro();
 
     while (myPlayer.health > 0) {
+        displayHUD(myPlayer);
+
         Room gate("Blood_Gate", "A 5,000-year-old scarlet gate of rusted iron.", "Vampiric");
         Room Courtyard("Courtyard", "", "");
 
