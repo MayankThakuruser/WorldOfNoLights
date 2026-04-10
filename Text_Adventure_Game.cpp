@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -11,11 +12,12 @@ public:
 
 
     Room(const string& room_name, const string& room_description, const string& room_type) // constructor
-        :name(room_name), description(room_description ), type (room_type){ }
+        :name(room_name), description(room_description), type(room_type) {
+    }
 };
 class Player {
 public:
-    string inventory{"Empty"};
+    vector<string> inventory;
     string name;
     string characterClass;
     int health;
@@ -25,8 +27,9 @@ public:
 
     // initalized the variables with constructor so that its easy to call and reassign value again
     Player(const string& n, const string& cclass, int h, int m, int d, int s)
-        : name(n),characterClass(cclass), health(h), mana(m),durability(d),strength(s){ }
-   
+        : name(n), characterClass(cclass), health(h), mana(m), durability(d), strength(s) {
+    }
+
     //To tell user there attributes based on their choice
 
     void Intro() {
@@ -40,7 +43,13 @@ public:
             cout << "But a little vulnerable: " << durability << " HP." << endl;
         }
     }
-
+    // checks if an item is available in inventory, linear search, will consume O(n) time but for a small game it shall work perfectly
+    bool hasItem(const string& ItemName) {
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory[i] == ItemName)  return true;
+        }
+        return false;
+    }
 };
 
 // Blood Gate has a special condition , as they ask sacrifice so they got a function
@@ -56,14 +65,14 @@ bool Blood_Gate(Player& p, Room& r) {
     cout << "The gate demands a sacrifice. Type 'offer' to place your hand on the iron: ";
     cin >> action;
 
-    if(action == "offer") {
-        
+    if (action == "offer") {
+
         cout << "\nThe gate takes part of your uniquq stats..." << endl;
 
         if (p.characterClass == "Warrior") {
 
             p.strength -= 5;
-            cout << "Your Durability drops to " << p.strength <<  endl;
+            cout << "Your Durability drops to " << p.strength << endl;
         }
         else if (p.characterClass == "Mage") {
 
@@ -71,21 +80,21 @@ bool Blood_Gate(Player& p, Room& r) {
             cout << "Your Mana drops to.." << p.mana << endl;
         }
 
-        
+
         cout << "The scarlet iron grinds open." << endl;
         return true;
     }
     else {
-        
+
         cout << "\nYou refuse, and the gate remains shut tight." << endl;
         return false;
     }
-    
+
 }
 //created a function for courtyard still because i can get a specfific condition for it in future
-void Courtyard_Event(Player& p, Room& r){
+void Courtyard_Event(Player& p, Room& r) {
     cout << "\n--- " << r.name << " ---" << endl;
-    cout << r.description << endl;  
+    cout << r.description << endl;
 
     string choice;
     cout << "You see a massive stone in the middle of the courtyard, imprinted some ancient language. Do you INVESTIGATE";
@@ -104,11 +113,11 @@ void Courtyard_Event(Player& p, Room& r){
 
         if (subChoice == 1) {
             if (p.characterClass == "Warrior") {
-                p.inventory = "Greatsword";
+                p.inventory.push_back("Greatsword");
                 cout << "You get a Big ahh Greatsword" << endl;
             }
             else {
-                p.inventory = "Moonstaff";
+                p.inventory.push_back("Moonstaff");
                 cout << "You get the power of Moon in your hands" << endl;
             }
         }
@@ -125,7 +134,15 @@ void Courtyard_Event(Player& p, Room& r){
             }
         }
     }
-    
+
+}
+void whispering_Gallery(Player& p, Room& r) {
+    cout << "\n--- " << r.name << " ---" << endl;
+    cout << r.description << endl;
+}
+void Reach(Player& p, Room& r) {
+    cout << "\n--- " << r.name << " ---" << endl;
+    cout << r.description << endl;
 }
 Player setupPlayer() {
     string name;
@@ -140,12 +157,12 @@ Player setupPlayer() {
     cin >> name;
 
     if (choice == 1) {
-        
+
         //assigns attributes to character based on player choice (int health, int mana, int durability, int strength)
         return Player(name, "Mage", 20, 15, 8, 2);
     }
     else {
-        
+
         return Player(name, "Warrior", 25, 0, 12, 15);
     }
 }
@@ -155,18 +172,22 @@ void displayHUD(const Player& p) {
     cout << "\n========================================" << endl;
     cout << " NAME: " << p.name << " | CLASS: " << p.characterClass << endl;
     cout << " HP: " << p.health << " | MANA: " << p.mana << " | STR: " << p.strength << endl;
-    cout << " INVENTORY: [" << p.inventory << "]" << endl;
+    cout << " INVENTORY: [ ";
+    for (const string& item : p.inventory) {
+        cout << item << " ";
+    }
+    cout << "]" << endl;
     cout << "========================================" << endl;
 }
 
 
 int main() {
-    char playAgain; 
+    char playAgain;
     int location{ 1 };
 
     Player myPlayer("Unknown", "None", 0, 0, 0, 0);
     Player myPlayer = setupPlayer();
-   
+
 
     myPlayer.Intro();
 
@@ -175,29 +196,44 @@ int main() {
 
         Room gate("Blood_Gate", "A 5,000-year-old scarlet gate of rusted iron.", "Vampiric");
         Room Courtyard("Courtyard", "", "");
+        Room Gallery("Whispering Gallery", "", "");
+        Room Sentinel("Sentinel's Reach", "", "");
 
         if (location == 1) {
             if (Blood_Gate(myPlayer, gate)) {
 
                 location = 2; // Only move to Courtyard if Blood_Gate returns true
 
-           }  
+            }
         }
-        
+
 
         else if (location == 2) {
 
-           
-            Courtyard_Event(myPlayer, Courtyard); 
+
+            Courtyard_Event(myPlayer, Courtyard);
 
             cout << "To the NORTH, you see a glowing statue. Move? ";
             string move;
             cin >> move;
             if (move == "north") location = 3;
-                   
+
         }
         else if (location == 3) {
+
+            whispering_Gallery(myPlayer, Gallery);
+
             cout << "You reached the end of the demo! Congrats." << endl;
+
+            string move;
+            cin >> move;
+            if (move == "west") location = 4;
+
+        }
+        else if (location == 4) {
+
+            Reach(myPlayer, Gallery);
+
             break;
         }
 
@@ -205,4 +241,4 @@ int main() {
     }
     return 0;
 }
-    
+
