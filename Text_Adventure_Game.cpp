@@ -1,8 +1,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cctype>
 
 using namespace std;
+
+struct Riddle{
+    string question;
+    string answer;
+};
 
 class Room {
 public:
@@ -137,8 +144,41 @@ void Courtyard_Event(Player& p, Room& r) {
 
 }
 void whispering_Gallery(Player& p, Room& r) {
+
+    vector<Riddle> riddleList = {
+    {"What has keys but no locks?", "piano"},
+    {"What gets wetter as it dries?", "towel"}
+    };
+
     cout << "\n--- " << r.name << " ---" << endl;
     cout << r.description << endl;
+
+    cout << " You see a picture " << endl;
+    cout << " A mysterious fog captures you:\n" << "Do you possess the key" << endl;
+
+    if (p.hasItem("key")) {
+        cout << "Great! You possess the key '\n'" << " The Fog disappears " << endl;
+    }
+    else {
+        cout << "The mist asks for your blood ";
+        p.health -= 3;
+    }
+
+    cout << " You hear a echoing voice , The image suddenly appears to be moving " << endl;
+    cout << " You must answer my questions for opeining the next gate or thee shall be burned alive '\n' ";
+    cout << "For each wrong answer Thee shall be punished and for every wrong answer You shall be burned " << endl;
+
+    cout << "--- Do you want to move ---" << endl;
+    string move;
+    cin >> move;
+
+    while (move != "yes") {
+        cout << "The gate is locked. Try again: ";
+        cin >> move;
+        transform(move.begin(), move.end(), move.begin(), ::tolower);
+    }
+    
+    
 }
 void Reach(Player& p, Room& r) {
     cout << "\n--- " << r.name << " ---" << endl;
@@ -185,7 +225,6 @@ int main() {
     char playAgain;
     int location{ 1 };
 
-    Player myPlayer("Unknown", "None", 0, 0, 0, 0);
     Player myPlayer = setupPlayer();
 
 
@@ -223,7 +262,6 @@ int main() {
 
             whispering_Gallery(myPlayer, Gallery);
 
-            cout << "You reached the end of the demo! Congrats." << endl;
 
             string move;
             cin >> move;
