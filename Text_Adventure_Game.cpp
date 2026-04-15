@@ -6,6 +6,8 @@
 
 using namespace std;
 
+// created a riddle struct so that If I need to add some more questions in future I can
+
 struct Riddle{
     string question;
     string answer;
@@ -145,6 +147,7 @@ void Courtyard_Event(Player& p, Room& r) {
 }
 void whispering_Gallery(Player& p, Room& r) {
 
+    // object using riddle struct
     vector<Riddle> riddleList = {
     {"What has keys but no locks?", "piano"},
     {"What gets wetter as it dries?", "towel"}
@@ -170,14 +173,36 @@ void whispering_Gallery(Player& p, Room& r) {
 
     cout << "--- Do you want to move ---" << endl;
     string move;
-    cin >> move;
+
+    // if the function is not yes then gate will be locked and I used transform to make the string in lower case doesnt matter what user writes
 
     while (move != "yes") {
         cout << "The gate is locked. Try again: ";
         cin >> move;
         transform(move.begin(), move.end(), move.begin(), ::tolower);
     }
-    
+    //goes through riddleList one by one
+
+    for (const auto& r : riddleList ){
+     
+        cout << r.question;
+        string playerAnswer;
+        cin >> playerAnswer;
+        transform(playerAnswer.begin(), playerAnswer.end(), playerAnswer.begin(), ::tolower);
+        if ( playerAnswer == r.answer){
+            cout << "Bravo!, You are right."<< endl;
+        }
+        else {
+            cout << "You are a fool, You shall be punished" << endl;
+            p.health -= 2;
+            cout << " Your life decreases: " << p.health << endl;
+            if (p.health <= 0) {
+                cout << "YOU DIED";
+                return;
+            }
+        }
+        
+    }
     
 }
 void Reach(Player& p, Room& r) {
