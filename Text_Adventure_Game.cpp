@@ -221,7 +221,7 @@ void Boss_Fight(Player& p, Room& r) {
 
     cout << "You come face with " << Sentinel.name << endl;
 
-    while(p.health <= 0 || Sentinel.health <= 0){
+    while(p.health <= 0 && Sentinel.health <= 0){
     
     }
 
