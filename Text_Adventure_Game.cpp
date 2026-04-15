@@ -3,6 +3,8 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -11,6 +13,12 @@ using namespace std;
 struct Riddle{
     string question;
     string answer;
+};
+
+struct Enemy {
+    string name;
+    int health;
+    int attackPower;
 };
 
 class Room {
@@ -205,10 +213,21 @@ void whispering_Gallery(Player& p, Room& r) {
     }
     
 }
-void Reach(Player& p, Room& r) {
+void Boss_Fight(Player& p, Room& r) {
     cout << "\n--- " << r.name << " ---" << endl;
     cout << r.description << endl;
+
+    Enemy Sentinel = { "The Dracula", 100, 30 };
+
+    cout << "You come face with " << Sentinel.name << endl;
+
+    while(p.health <= 0 || Sentinel.health <= 0){
+    
+    }
+
 }
+
+
 Player setupPlayer() {
     string name;
     int choice;
@@ -247,7 +266,7 @@ void displayHUD(const Player& p) {
 
 
 int main() {
-    char playAgain;
+    srand(time(0));
     int location{ 1 };
 
     Player myPlayer = setupPlayer();
@@ -295,7 +314,7 @@ int main() {
         }
         else if (location == 4) {
 
-            Reach(myPlayer, Gallery);
+            Boss_Fight(myPlayer, Gallery);
 
             break;
         }
