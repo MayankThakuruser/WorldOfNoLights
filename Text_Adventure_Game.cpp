@@ -222,7 +222,54 @@ void Boss_Fight(Player& p, Room& r) {
     cout << "You come face with " << Sentinel.name << endl;
 
     while(p.health <= 0 && Sentinel.health <= 0){
-    
+        int playerChoice;
+
+        cout << "Choose your action " << endl;
+        cout << "1.Attack >> 2. Heal(only 1 potion avail.) >> 3. Defend >> Use ultimate(charge req) " << endl;
+
+        int playerAttack = 0;
+
+        switch (playerChoice ) {
+        case 1:
+        {
+            playerAttack = rand() % 10 + 5;
+            Sentinel.health -= playerAttack;
+            cout << "The draculas health decreases to : " << Sentinel.health;
+            break;
+        }
+
+        case 2:{ 
+            if(p.hasItem ("Potion") && p.health < 22 ){ // we should make it depend on whats the max health of the character type
+                p.health += 5;
+                cout << "You have gained +5 and now your health is: " << p.health;
+                p.inventory.erase(std::remove(p.inventory.begin(), p.inventory.end(), "potion"), p.inventory.end());  // we can use erase(inventory, "potion") if its c++ 20
+                cout << "You have no potions anymore";
+            }
+            else {
+                cout << "You can't use the potion Right now";
+            }
+            break;
+        }
+            
+        case 3: {
+            // havent decided yet
+            break;
+        }
+            
+        default:
+            cout << "Please chose the correct option (1 -- 2 -- 3 )"; \
+                continue;
+        }
+        if (Sentinel.health <= 0) {
+            cout << "Congratulations, You have finally defeated The Great Sentinel : THE DRACULA";
+                break;
+        }
+        cout << "Dracula lungs at you ";
+
+        int bossAttack = rand() % 10 + 5;
+        p.health -= bossAttack;
+
+        
     }
 
 }
@@ -243,7 +290,7 @@ Player setupPlayer() {
     if (choice == 1) {
 
         //assigns attributes to character based on player choice (int health, int mana, int durability, int strength)
-        return Player(name, "Mage", 20, 15, 8, 2);
+        return Player(name, "Mage", 22, 15, 8, 2);
     }
     else {
 
