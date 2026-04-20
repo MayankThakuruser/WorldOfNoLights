@@ -19,6 +19,7 @@ struct Enemy {
     string name;
     int health;
     int attackPower;
+    int blockMeter{ 0 };
 };
 
 class Room {
@@ -220,56 +221,74 @@ void Boss_Fight(Player& p, Room& r) {
     Enemy Sentinel = { "The Dracula", 100, 30 };
 
     cout << "You come face with " << Sentinel.name << endl;
+    bool isStunned{ false };
 
     while(p.health <= 0 && Sentinel.health <= 0){
         int playerChoice;
+        int draculaIntent = rand() % 100;
+        string moveDescription;
+
+        if (draculaIntent < 60) moveDescription = "Dracula is lunging forward!"; // ATTACK
+        else if (draculaIntent < 90) moveDescription = "Dracula is bracing behind his cloak..."; // DEFEND
+        else moveDescription = "The air grows cold and dark..."; // SPECIAL
+
+        cout << "\n[INTENT]: " << moveDescription << endl;
 
         cout << "Choose your action " << endl;
         cout << "1.Attack >> 2. Heal(only 1 potion avail.) >> 3. Defend >> Use ultimate(charge req) " << endl;
 
         int playerAttack = 0;
 
-        switch (playerChoice ) {
-        case 1:
-        {
-            playerAttack = rand() % 10 + 5;
-            Sentinel.health -= playerAttack;
-            cout << "The draculas health decreases to : " << Sentinel.health;
-            break;
-        }
-
-        case 2:{ 
-            if(p.hasItem ("Potion") && p.health < 22 ){ // we should make it depend on whats the max health of the character type
-                p.health += 5;
-                cout << "You have gained +5 and now your health is: " << p.health;
-                p.inventory.erase(std::remove(p.inventory.begin(), p.inventory.end(), "potion"), p.inventory.end());  // we can use erase(inventory, "potion") if its c++ 20
-                cout << "You have no potions anymore";
+        switch (playerChoice) {
+        case 1: 
+            if (draculaIntent >= 60 && draculaIntent < 90) { 
+                Sentinel.blockMeter -= 10;
+                cout << "You hit his cloak! Block Meter: " << Sentinel.blockMeter << endl;
+                if (Sentinel.blockMeter <= 0) isStunned = true;
             }
             else {
-                cout << "You can't use the potion Right now";
+                Sentinel.health -= 15;
+                cout << "You landed a clean hit!" << endl;
+            }
+            break;
+
+        case 2: 
+            if (draculaIntent < 60) { // Only works against Attacks
+                cout << "CLANG! You parried him!" << endl;
+                isStunned = true;
+            }
+            else {
+                cout << "You parried thin air! You're wide open!" << endl;
+                p.health -= 5; // Penalty for missing a parry
             }
             break;
         }
-            
-        case 3: {
-            // havent decided yet
+
+         
+        if (Sentinel.health <= 0) {
+            cout << "The Dracula has been defeated!" << endl;
             break;
         }
-            
-        default:
-            cout << "Please chose the correct option (1 -- 2 -- 3 )"; \
-                continue;
-        }
-        if (Sentinel.health <= 0) {
-            cout << "Congratulations, You have finally defeated The Great Sentinel : THE DRACULA";
-                break;
-        }
-        cout << "Dracula lungs at you ";
 
-        int bossAttack = rand() % 10 + 5;
-        p.health -= bossAttack;
-
-        
+        if (isStunned) {
+            cout << "\nDracula is reeling from your impact! He recovers his stance." << endl;
+            isStunned = false; // 
+            Sentinel.blockMeter = 30; 
+        }
+        else if (draculaIntent < 60) {
+            cout << "\nDracula lunges at you!" << endl;
+            int bossAttack = rand() % 10 + 5;
+            p.health -= bossAttack;
+            cout << "You took " << bossAttack << " damage! Current Health: " << p.health << endl;
+        }
+        else if (draculaIntent >= 90) {
+            p.health -= 2;
+            Sentinel.health += 5;
+            cout << "\nDracula siphons your life force!" << endl;
+        }
+        else {
+            cout << "\nDracula holds his defensive stance, watching your every move..." << endl;
+        }
     }
 
 }
