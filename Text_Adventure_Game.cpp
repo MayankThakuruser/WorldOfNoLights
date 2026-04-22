@@ -88,7 +88,32 @@ public:
         return false;
     }
 };
+// Introduces player
+Player setupPlayer() {
+    string name;
+    int choice;
 
+    cout << "Welcome to the World of No Lights" << endl;
+    cout << "Do you want to be 'Mage (1)' or 'Warrior (2)': ";
+
+    cin >> choice;
+
+    cout << "Enter yout character's name";
+    cin >> name;
+
+    if (choice == 1) {
+
+        //assigns attributes to character based on player choice (int health, int mana, int durability, int strength)
+        return Player(name, "Mage", 22, 15, 8, 2);
+    }
+    else {
+
+        return Player(name, "Warrior", 25, 0, 12, 15);
+    }
+}
+
+
+// Room 1
 // Blood Gate has a special condition , as they ask sacrifice so they got a function
 //It asks for sacrifice from player and based on their character choice , It deducts 
 // their strenght (for warrior) and mana (for mage)
@@ -129,6 +154,8 @@ bool Blood_Gate(Player& p, Room& r) {
 
 }
 //created a function for courtyard still because i can get a specfific condition for it in future
+
+//Room 2
 void Courtyard_Event(Player& p, Room& r) {
     cout << "\n--- " << r.name << " ---" << endl;
     cout << r.description << endl;
@@ -173,6 +200,7 @@ void Courtyard_Event(Player& p, Room& r) {
     }
 
 }
+// Room 3
 void whispering_Gallery(Player& p, Room& r) {
 
     // object using riddle struct
@@ -311,31 +339,7 @@ void Boss_Fight(Player& p, Room& r) {
     }
 
 }
-
-
-Player setupPlayer() {
-    string name;
-    int choice;
-
-    cout << "Welcome to the World of No Lights" << endl;
-    cout << "Do you want to be 'Mage (1)' or 'Warrior (2)': ";
-
-    cin >> choice;
-
-    cout << "Enter yout character's name";
-    cin >> name;
-
-    if (choice == 1) {
-
-        //assigns attributes to character based on player choice (int health, int mana, int durability, int strength)
-        return Player(name, "Mage", 22, 15, 8, 2);
-    }
-    else {
-
-        return Player(name, "Warrior", 25, 0, 12, 15);
-    }
-}
-
+// Displays player informations
 void displayHUD(const Player& p) {
 
     cout << "\n========================================" << endl;
