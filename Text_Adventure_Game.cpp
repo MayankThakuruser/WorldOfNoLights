@@ -5,9 +5,28 @@
 #include <cctype>
 #include <cstdlib>
 #include <ctime>
+#include <thread>
+#include <chrono>
 
 using namespace std;
 
+struct Typewriter : public streambuf {
+    streambuf* dest;
+    int delay;
+
+    Typewriter(streambuf* d, int ms) : dest(d), delay(ms) {}
+
+protected:
+    virtual int_type overflow(int_type ch) override {
+        if (ch != traits_type::eof()) {
+            this_thread::sleep_for(chrono::milliseconds(delay));
+            dest->sputc(ch);
+            dest -> pubsync();
+        }
+        return ch;
+
+    }
+};
 // created a riddle struct so that If I need to add some more questions in future I can
 
 struct Riddle{
@@ -201,7 +220,7 @@ void whispering_Gallery(Player& p, Room& r) {
         if ( playerAnswer == r.answer){
             cout << "Bravo!, You are right."<< endl;
         }
-        else {
+        else {  
             cout << "You are a fool, You shall be punished" << endl;
             p.health -= 2;
             cout << " Your life decreases: " << p.health << endl;
@@ -332,6 +351,10 @@ void displayHUD(const Player& p) {
 
 
 int main() {
+    streambuf* original = std::cout.rdbuf();
+    Typewriter tw(cout.rdbuf(), 50);
+    cout.rdbuf(&tw);
+
     srand(time(0));
     int location{ 1 };
 
