@@ -98,7 +98,7 @@ Player setupPlayer() {
 
     cin >> choice;
 
-    cout << "Enter yout character's name";
+    cout << "Enter your character's name";
     cin >> name;
 
     if (choice == 1) {
@@ -270,7 +270,7 @@ void Boss_Fight(Player& p, Room& r) {
     cout << "You come face with " << Sentinel.name << endl;
     bool isStunned{ false };
 
-    while(p.health <= 0 && Sentinel.health <= 0){
+    while(p.health > 0 && Sentinel.health > 0){
         int playerChoice;
         int draculaIntent = rand() % 100;
         string moveDescription;
@@ -283,6 +283,9 @@ void Boss_Fight(Player& p, Room& r) {
 
         cout << "Choose your action " << endl;
         cout << "1.Attack >> 2. Heal(only 1 potion avail.) >> 3. Defend >> Use ultimate(charge req) " << endl;
+
+        // FIX: Prompt user for input to initialize playerChoice
+        cin >> playerChoice; // Added to fix uninitialized variable error
 
         int playerAttack = 0;
 
@@ -359,7 +362,8 @@ int main() {
     Typewriter tw(cout.rdbuf(), 50);
     cout.rdbuf(&tw);
 
-    srand(time(0));
+    // FIX: Cast time(0) to unsigned int to avoid possible loss of data warning
+    srand(static_cast<unsigned int>(time(0)));
     int location{ 1 };
 
     Player myPlayer = setupPlayer();
